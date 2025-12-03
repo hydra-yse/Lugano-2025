@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StartScreen } from '@screens/StartScreen'
 import { GameScreen } from '@screens/GameScreen'
 import { WinScreen } from '@screens/WinScreen'
-import { Keys, GameState, ScreenPhase } from './types'
+import { ScreenPhase, type Keys, type GameState } from './types'
 
 import audio from '@components/game/audio'
 

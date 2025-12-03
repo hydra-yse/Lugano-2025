@@ -1,4 +1,4 @@
-import { Position, Velocity } from '@types'
+import type { Position, Velocity } from '@types'
 
 export class Projectiles {
   position: Position

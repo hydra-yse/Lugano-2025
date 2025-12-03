@@ -1,4 +1,4 @@
-import { Position, Velocity } from '@types'
+import type { Position, Velocity } from '@types'
 import { Invader } from './Invader'
 
 export class Grid {

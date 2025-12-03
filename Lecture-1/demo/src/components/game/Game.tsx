@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { Keys, GameState, Position } from '@types'
+import type { Keys, GameState, Position } from '@types'
 import { Player } from './Player'
 import { Grid } from './Grid'
 import { Projectiles, InvaderProjectile } from './Projectiles'

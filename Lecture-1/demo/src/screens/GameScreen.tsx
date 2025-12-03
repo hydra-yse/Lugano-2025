@@ -1,6 +1,6 @@
 import React from 'react'
 import { Game } from '@components/game/Game'
-import { Keys, GameState } from '@types'
+import type { Keys, GameState } from '@types'
 
 interface GameScreenProps {
   gameState: GameState

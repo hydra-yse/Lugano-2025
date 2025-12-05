@@ -1,3 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00d8ae;
+}
+
 body {
   margin: 0;
   background-color: black;
@@ -161,7 +167,7 @@ canvas {
   position: absolute;
   color: white;
   top: 50%;
-  transform: translateY(-60%);
+  transform: translateY(-50%);
   left: 0;
   width: 100%;
   text-align: center;
@@ -194,4 +200,10 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.sidebar, .modal-wrapper {
+  background: rgba(0,0,0,0.4);
+  border: 2px solid rgba(0, 216, 174, 0.5);
+  box-shadow: 0 0 2px 2px var(--color-primary);
 }

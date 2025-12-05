@@ -3,8 +3,12 @@ import { StartScreen } from '@screens/StartScreen'
 import { GameScreen } from '@screens/GameScreen'
 import { WinScreen } from '@screens/WinScreen'
 import { ScreenPhase, type Keys, type GameState } from './types'
+import { Sidebar, SidebarModalState } from '@components/sidebar/Sidebar'
 
 import audio from '@components/game/audio'
+import { type ModalProps } from '@components/Modal'
+import { HistoryModal } from '@components/sidebar/modals/History'
+import { ProfilesModal } from '@components/sidebar/modals/Profiles'
 
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -124,30 +128,46 @@ const App: React.FC = () => {
     }
   }, [])
 
+  const [modalState, setModalState] = useState<SidebarModalState | null>(null);
+  const modalProps: ModalProps = {
+    close: () => setModalState(null),
+  };
+
   return (
-    <div className="game-container">
+    <>
       {(() => {
-        switch (currentScreen) {
-          case ScreenPhase.START:
-            return <StartScreen onStartGame={startGame} />
-          case ScreenPhase.GAME:
-            return (
-              <GameScreen
-                gameState={gameState}
-                setGameState={setGameState}
-                keys1={keys1}
-                keys2={keys2}
-                onGameOver={handleGameOver}
-                audio={audio}
-              />
-            )
-          case ScreenPhase.WIN:
-            return <WinScreen winnerText={winnerText} onBackToStart={backToStart} />
-          default:
-            return null
+        switch (modalState) {
+          case SidebarModalState.History:
+            return <HistoryModal {...modalProps} />
+          case SidebarModalState.Profiles:
+            return <ProfilesModal {...modalProps} />
         }
       })()}
-    </div>
+      <Sidebar setModalState={setModalState} />
+      <div className="game-container">
+        {(() => {
+          switch (currentScreen) {
+            case ScreenPhase.START:
+              return <StartScreen onStartGame={startGame} />
+            case ScreenPhase.GAME:
+              return (
+                <GameScreen
+                  gameState={gameState}
+                  setGameState={setGameState}
+                  keys1={keys1}
+                  keys2={keys2}
+                  onGameOver={handleGameOver}
+                  audio={audio}
+                />
+              )
+            case ScreenPhase.WIN:
+              return <WinScreen winnerText={winnerText} onBackToStart={backToStart} />
+            default:
+              return null
+          }
+        })()}
+      </div>
+    </>
   )
 }
 

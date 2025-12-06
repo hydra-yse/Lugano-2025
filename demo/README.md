@@ -30,3 +30,15 @@ then make sure the npm `bin` folder is available in your PATH.
    ```bash
    pnpm dev
    ```
+
+## Local Setup
+If you wish to run the setup locally, you can run:
+   ```bash
+   ./scripts/setup_local.sh
+   ```
+Please make sure you have Rust and Docker installed before running.
+
+To stop the setup, you can then run:
+   ```bash
+   ./scripts/stop_setup.sh
+   ```

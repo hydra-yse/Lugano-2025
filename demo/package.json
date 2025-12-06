@@ -7,7 +7,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "postinstall": "node ./scripts/generate_mnemonics.js"
+    "postinstall": "node ./scripts/generate_env.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
@@ -17,7 +17,7 @@
     "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
-    "@breeztech/breez-sdk-liquid": "link:./lib/breez_sdk_liquid/",
+    "@breeztech/breez-sdk-liquid": "link:./lib/breez_sdk_liquid/packages/wasm/",
     "@eslint/js": "^9.39.1",
     "@heroicons/react": "^2.2.0",
     "@types/howler": "^2.2.12",

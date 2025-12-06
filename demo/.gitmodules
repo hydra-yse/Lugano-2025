@@ -1,0 +1,4 @@
+[submodule "BreezSdkLiquid"]
+    path = lib/breez_sdk_liquid
+    url = https://github.com/hydra-yse/breez-sdk-liquid.git
+    branch = yse-planb-demo

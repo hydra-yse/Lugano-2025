@@ -1,0 +1,6 @@
+[submodule "demo/lib/breez_sdk_liquid_local"]
+	path = demo/lib/breez_sdk_liquid_local
+	url = https://github.com/hydra-yse/breez-sdk-liquid
+[submodule "demo/lib/breez_sdk_liquid"]
+	path = demo/lib/breez_sdk_liquid
+	url = https://github.com/hydra-yse/breez-sdk-liquid

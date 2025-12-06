@@ -9,6 +9,7 @@ import audio from '@components/game/audio'
 import { type ModalProps } from '@components/Modal'
 import { HistoryModal } from '@components/sidebar/modals/History'
 import { ProfilesModal } from '@components/sidebar/modals/Profiles'
+import { TopUpModal } from '@components/sidebar/modals/TopUp'
 
 interface Bet {
   amountSat: number;
@@ -156,6 +157,8 @@ const App: React.FC = () => {
     <>
       {(() => {
         switch (modalState) {
+          case SidebarModalState.TopUp:
+            return <TopUpModal {...modalProps} />
           case SidebarModalState.History:
             return <HistoryModal {...modalProps} />
           case SidebarModalState.Profiles:

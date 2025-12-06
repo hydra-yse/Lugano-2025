@@ -1,6 +1,7 @@
-import { ClockIcon, UserGroupIcon } from '@heroicons/react/24/solid'
+import { ClockIcon, UserGroupIcon, CurrencyDollarIcon } from '@heroicons/react/24/solid'
 
 export enum SidebarModalState {
+  TopUp,
   History,
   Profiles,
 }
@@ -18,6 +19,7 @@ export const Sidebar = ({ setModalState }: SidebarProps) => {
 
   return (
     <div className="sidebar absolute top-1/2 right-0 z-90 flex flex-col p-2 gap-3">
+      <CurrencyDollarIcon onClick={() => setModalState(SidebarModalState.TopUp)} {...iconProps} />
       <ClockIcon onClick={() => setModalState(SidebarModalState.History)} {...iconProps} />
       <UserGroupIcon onClick={() => setModalState(SidebarModalState.Profiles)} {...iconProps} />
     </div>

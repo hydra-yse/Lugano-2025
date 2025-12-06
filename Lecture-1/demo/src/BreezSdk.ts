@@ -1,4 +1,4 @@
-import init, { BindingLiquidSdk, connect, defaultConfig } from '@breeztech/breez-sdk-liquid';
+import init, { BindingLiquidSdk, connect, defaultConfig, setLogger, type Logger, type LogEntry } from '@breeztech/breez-sdk-liquid';
 
 export const newSdk = async (mnemonic: string): Promise<BindingLiquidSdk> => {
   const config = defaultConfig('regtest', import.meta.env.VITE_BREEZ_API_KEY);
@@ -23,6 +23,15 @@ export const newSdk = async (mnemonic: string): Promise<BindingLiquidSdk> => {
 export let P1_SDK: BindingLiquidSdk | null = null;
 export let P2_SDK: BindingLiquidSdk | null = null;
 
+class MyLogger implements Logger {
+  // TODO: Add your code here
+  log(_l: LogEntry) { }
+}
+
+const initLogging = () => {
+  setLogger(new MyLogger())
+}
+
 init()
   .then(async () => {
     try {
@@ -30,8 +39,9 @@ init()
       console.log("Player 1 connected successfully");
       P2_SDK = await newSdk(import.meta.env.VITE_PLAYER_2_MNEMONIC);
       console.log("Player 2 connected successfully");
+      initLogging();
+
     } catch (err) {
       console.error(`Could not connect players: ${err}`)
     }
   });
-

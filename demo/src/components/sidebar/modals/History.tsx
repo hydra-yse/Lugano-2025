@@ -1,5 +1,6 @@
 import { Modal, type ModalProps } from "@components/Modal"
-import { useState } from "react"
+import { P1_SDK, P2_SDK } from "BreezSdk";
+import { useEffect, useState } from "react"
 
 export interface HistoryItemProps {
   timestamp: number;
@@ -19,49 +20,47 @@ const HistoryItem = ({ timestamp, winner, amountWon }: HistoryItemProps) => {
 }
 
 export const HistoryModal = (props: ModalProps) => {
-  // TODO: Add your code here
-  const [history, _setHistory] = useState<HistoryItemProps[]>([
-    {
-      timestamp: 1764976320,
-      amountWon: 3000,
-      winner: 'P1',
-    },
-    {
-      timestamp: 1764972120,
-      amountWon: 20000,
-      winner: 'P1',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-    {
-      timestamp: 1764976120,
-      amountWon: 7000,
-      winner: 'P2',
-    },
-  ]);
+  const [history, setHistory] = useState<HistoryItemProps[]>([]);
+
+  const calculateHistory = async () => {
+    if (!P1_SDK || !P2_SDK) return;
+
+    const p1History = await P1_SDK.listPayments({})
+    const p1TxIds = p1History.map((p) => p.txId).filter(p => p !== undefined)
+    const p2History = await P2_SDK.listPayments({})
+    const p2TxIds = p2History.map((p) => p.txId).filter(p => p !== undefined)
+
+    const history: Record<string, HistoryItemProps> = {}
+    p1History.forEach((payment1) => {
+      const txid = payment1?.txId;
+      if (!txid) return;
+      if (p2TxIds.includes(txid)) {
+        const isWinner = payment1.paymentType == 'receive';
+        history[txid] = {
+          winner: isWinner ? 'P1' : 'P2',
+          timestamp: payment1.timestamp,
+          amountWon: payment1.amountSat,
+        }
+      }
+    })
+    p2History.forEach((payment2) => {
+      const txid = payment2?.txId;
+      if (!txid) return;
+      if (p1TxIds.includes(txid)) {
+        const isWinner = payment2.paymentType == 'receive';
+        history[txid] = {
+          winner: isWinner ? 'P1' : 'P2',
+          timestamp: payment2.timestamp,
+          amountWon: payment2.amountSat,
+        }
+      }
+    })
+    setHistory(Object.values(history))
+  }
+
+  useEffect(() => {
+    setTimeout(() => calculateHistory(), 2000);
+  }, [])
 
   return (
     <Modal {...props}>

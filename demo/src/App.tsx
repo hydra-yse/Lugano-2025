@@ -10,16 +10,18 @@ import { type ModalProps } from '@components/Modal'
 import { HistoryModal } from '@components/sidebar/modals/History'
 import { ProfilesModal } from '@components/sidebar/modals/Profiles'
 import { TopUpModal } from '@components/sidebar/modals/TopUp'
+import { P1_SDK, P2_SDK } from 'BreezSdk'
+import type { BindingLiquidSdk } from '@breeztech/breez-sdk-liquid/web'
 
 interface Bet {
   amountSat: number;
-  p1_invoice: string;
-  p2_invoice: string;
+  p1Invoice: string;
+  p2Invoice: string;
 }
 type Winner = 'P1' | 'P2';
 
 const App: React.FC = () => {
-  let [currentBetSat, setCurrentBet] = useState<Bet | null>(null);
+  let [currentBet, setCurrentBet] = useState<Bet | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     player1Alive: true,
     player2Alive: true,
@@ -60,22 +62,52 @@ const App: React.FC = () => {
     }
   }
 
-  const payWinner = (winner: Winner) => {
-    console.log(winner, currentBetSat);
-    if (!currentBetSat) return;
-    // TODO: Add your code here
+  const payWinner = async (winner: Winner) => {
+    if (!currentBet) return;
+    let loserSdk: BindingLiquidSdk | null;
+    if (winner == 'P1') loserSdk = P2_SDK;
+    else loserSdk = P2_SDK;
+
+    if (!loserSdk) return;
+
+    const prepareResponse = await loserSdk.prepareSendPayment({
+      destination: winner == 'P1' ? currentBet.p1Invoice : currentBet.p2Invoice,
+    });
+    const sendPaymentResponse = await loserSdk.sendPayment({
+      prepareResponse,
+    })
+    console.log(sendPaymentResponse.payment);
   }
 
   const handleGameOver = (loser: number) => {
     setGameState(prev => ({ ...prev, [`player${loser}Alive`]: false }))
   }
 
-  const startGame = (betAmountSat: number) => {
+  const createInvoice = async (sdk: BindingLiquidSdk, betAmountSat: number) => {
+    const prepareResponse = await sdk.prepareReceivePayment({
+      paymentMethod: 'bolt11Invoice',
+      amount: {
+        type: 'bitcoin',
+        payerAmountSat: betAmountSat,
+      }
+    });
+    const receiveResponse = await sdk.receivePayment({
+      prepareResponse
+    })
+    const invoice = receiveResponse.destination;
+    return invoice;
+  }
+
+  const startGame = async (betAmountSat: number) => {
+    if (!P1_SDK || !P2_SDK) return;
+
+    const p1Invoice = await createInvoice(P1_SDK, betAmountSat);
+    const p2Invoice = await createInvoice(P2_SDK, betAmountSat);
     setCurrentBet({
       amountSat: betAmountSat,
       // TODO: Add your code here
-      p1_invoice: '',
-      p2_invoice: '',
+      p1Invoice,
+      p2Invoice,
     });
     audio.backgroundMusic.play()
     audio.start.play()

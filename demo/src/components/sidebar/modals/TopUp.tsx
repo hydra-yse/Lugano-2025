@@ -3,26 +3,41 @@ import { Modal, type ModalProps } from "@components/Modal"
 import { P1_SDK, P2_SDK } from "BreezSdk"
 import { QRCodeSVG } from 'qrcode.react';
 import { DocumentDuplicateIcon, CheckIcon } from '@heroicons/react/24/solid'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ProfilesCardProps {
   sdk: BindingLiquidSdk | null,
   playerName: string,
 }
 
-// TODO: Add your code here
 export const PlayerQR = ({ sdk, playerName }: ProfilesCardProps) => {
+  const [liquidAddress, setLiquidAddress] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
   if (!sdk) return 'Loading...';
 
+  const generateLiquidAddress = async (): Promise<string> => {
+    const prepareResponse = await sdk.prepareReceivePayment({
+      paymentMethod: 'liquidAddress',
+    });
+    const receiveResponse = await sdk.receivePayment({
+      prepareResponse,
+    });
+    return receiveResponse.destination
+  }
+
+  useEffect(() => {
+    generateLiquidAddress().then(setLiquidAddress)
+  }, [])
+
   const copy = () => {
-    navigator.clipboard.writeText("CHANGEME");
+    if (!liquidAddress) return;
+    navigator.clipboard.writeText(liquidAddress);
     setCopied(true);
   }
   return (
     <div className="flex flex-col p-5 gap-2 w-full">
       <h2 className="text-2xl font-bold">{playerName}</h2>
-      <QRCodeSVG value="CHANGEME" size={180} style={{ alignSelf: 'center', padding: '5px' }} />
+      {liquidAddress ? <QRCodeSVG value={liquidAddress} size={180} style={{ alignSelf: 'center', padding: '5px' }} /> : 'Loading...'}
       <div onClick={copy} className="flex gap-1 items-center justify-center bg-primary rounded-lg text-black w-[80px] p-2 self-center cursor-pointer">
         {
           copied ? <>

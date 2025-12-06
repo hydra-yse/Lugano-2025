@@ -24,8 +24,9 @@ export let P1_SDK: BindingLiquidSdk | null = null;
 export let P2_SDK: BindingLiquidSdk | null = null;
 
 class MyLogger implements Logger {
-  // TODO: Add your code here
-  log(_l: LogEntry) { }
+  log(l: LogEntry) {
+    console.log(`[${l.level}]: ${l.line}`)
+  }
 }
 
 const initLogging = () => {
@@ -40,7 +41,6 @@ init()
       P2_SDK = await newSdk(import.meta.env.VITE_PLAYER_2_MNEMONIC);
       console.log("Player 2 connected successfully");
       initLogging();
-
     } catch (err) {
       console.error(`Could not connect players: ${err}`)
     }

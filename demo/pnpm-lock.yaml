@@ -28,8 +28,8 @@ importers:
         version: 4.1.17
     devDependencies:
       '@breeztech/breez-sdk-liquid':
-        specifier: link:./lib/breez_sdk_liquid/
-        version: link:lib/breez_sdk_liquid
+        specifier: link:./lib/breez_sdk_liquid/packages/wasm/
+        version: link:lib/breez_sdk_liquid/packages/wasm
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.1

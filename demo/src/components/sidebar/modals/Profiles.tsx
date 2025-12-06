@@ -1,6 +1,7 @@
-import type { BindingLiquidSdk } from "@breeztech/breez-sdk-liquid/web"
+import type { BindingLiquidSdk, Payment, WalletInfo } from "@breeztech/breez-sdk-liquid/web"
 import { Modal, type ModalProps } from "@components/Modal"
 import { P1_SDK, P2_SDK } from "BreezSdk"
+import { useEffect, useState } from "react";
 
 interface ProfilesCardProps {
   sdk: BindingLiquidSdk | null,
@@ -8,7 +9,42 @@ interface ProfilesCardProps {
 }
 
 export const ProfileCard = ({ sdk, playerName }: ProfilesCardProps) => {
+  const [info, setInfo] = useState<WalletInfo | null>(null);
+  const [payments, setPayments] = useState<Payment[] | null>(null);
   if (!sdk) return 'Loading...';
+
+  useEffect(() => {
+    setTimeout(() => {
+      sdk.getInfo()
+        .then((info) => setInfo(info.walletInfo));
+
+      sdk.listPayments({})
+        .then(setPayments);
+    }, 2000)
+  }, [])
+
+  const getMoneyLost = (): number => {
+    let moneyLost = 0;
+    payments?.forEach((payment) => {
+      switch (payment.paymentType) {
+        case 'send':
+          moneyLost += payment.amountSat;
+      }
+    })
+    return moneyLost;
+  }
+
+  const getGamesWon = (): number => {
+    let gamesWon = 0;
+    payments?.forEach((payment) => {
+      switch (payment.paymentType) {
+        case 'receive':
+          gamesWon += 1;
+      }
+    })
+    return gamesWon;
+  }
+
   return (
     <div className="flex flex-col border-1 rounded-lg border-primary p-5 gap-1 w-full">
       <div className="flex self-center rounded-full bg-primary w-[90px] p-4">
@@ -17,16 +53,15 @@ export const ProfileCard = ({ sdk, playerName }: ProfilesCardProps) => {
 
       <h2 className="text-lg font-bold">{playerName}</h2>
       <div className="text-sm">
-        <span>Games won: {0}</span><br />
-        <span>Money lost: {0}</span><br />
-        <span>Current balance: {0}</span><br />
+        <span>Games won: {getGamesWon()}</span><br />
+        <span>Money lost: {getMoneyLost()} sats</span><br />
+        <span>Current balance: {info?.balanceSat}</span><br />
       </div>
     </div>
   )
 }
 
 export const ProfilesModal = (props: ModalProps) => {
-  // TODO: Add your code here
   return (
     <Modal {...props}>
       <h1 className="text-2xl mb-1">Profiles</h1>

@@ -10,7 +10,15 @@ import { type ModalProps } from '@components/Modal'
 import { HistoryModal } from '@components/sidebar/modals/History'
 import { ProfilesModal } from '@components/sidebar/modals/Profiles'
 
+interface Bet {
+  amountSat: number;
+  p1_invoice: string;
+  p2_invoice: string;
+}
+type Winner = 'P1' | 'P2';
+
 const App: React.FC = () => {
+  let [currentBetSat, setCurrentBet] = useState<Bet | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     player1Alive: true,
     player2Alive: true,
@@ -39,24 +47,35 @@ const App: React.FC = () => {
 
   const checkGameEnd = () => {
     if (!gameState.player1Alive && !gameState.player2Alive) {
-      let winner: string
+      let winner: Winner | null = null;
       if (gameState.player1Score > gameState.player2Score) {
-        winner = 'Player 1 Wins!'
+        winner = 'P1';
       } else if (gameState.player2Score > gameState.player1Score) {
-        winner = 'Player 2 Wins!'
-      } else {
-        winner = "It's a Draw!"
+        winner = 'P2';
       }
-      setWinnerText(winner)
+      setWinnerText(winner ? `Player ${winner[1]} wins!` : `It's a draw!`);
       setCurrentScreen(ScreenPhase.WIN)
+      if (winner) payWinner(winner)
     }
   }
 
-  const handleGameOver = (playerNumber: number) => {
-    setGameState(prev => ({ ...prev, [`player${playerNumber}Alive`]: false }))
+  const payWinner = (winner: Winner) => {
+    console.log(winner, currentBetSat);
+    if (!currentBetSat) return;
+    // TODO: Add your code here
   }
 
-  const startGame = () => {
+  const handleGameOver = (loser: number) => {
+    setGameState(prev => ({ ...prev, [`player${loser}Alive`]: false }))
+  }
+
+  const startGame = (betAmountSat: number) => {
+    setCurrentBet({
+      amountSat: betAmountSat,
+      // TODO: Add your code here
+      p1_invoice: '',
+      p2_invoice: '',
+    });
     audio.backgroundMusic.play()
     audio.start.play()
     setCurrentScreen(ScreenPhase.GAME)

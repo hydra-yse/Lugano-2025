@@ -61,6 +61,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStartGame }) => {
               : <Loader playerName="P2" />
           }
         </div>
+        <p className="fixed left-0 bottom-10 w-full text-center text-xs">Game credits to <a className='text-primary italic' href="https://github.com/Tesfamichael12/space-invaders" target="_blank">Tesfamichael12/space-invaders</a></p>
       </div>
     </div>
   )

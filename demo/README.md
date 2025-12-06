@@ -20,7 +20,7 @@ then make sure the npm `bin` folder is available in your PATH.
    ```
 2. Navigate to the project directory:
    ```bash
-   cd Lugano-2025/Lecture-1/demo
+   cd Lugano-2025/demo
    ```
 3. Install the dependencies:
    ```bash
